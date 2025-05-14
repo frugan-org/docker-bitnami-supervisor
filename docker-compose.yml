@@ -1,0 +1,15 @@
+services:
+
+  supervisor:
+    container_name: ${SUPERVISOR_NAME}
+    build:
+      context: ./${SUPERVISOR_TAG}
+      args:
+        TAG: ${SUPERVISOR_TAG}
+        restart: always
+    networks:
+      - default
+    volumes:
+      #- ./custom.conf:/etc/supervisor/conf.d/custom.conf  
+      - ./jobs:/etc/supervisor/jobs.d
+      - /var/run/docker.sock:/var/run/docker.sock:ro

@@ -1,0 +1,26 @@
+FROM bitnami/minideb:bookworm 
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+RUN install_packages \
+        apt-transport-https \
+        ca-certificates \
+        curl \
+        gnupg \
+        lsb-release \
+    && curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
+    && install_packages \
+        docker-ce-cli \
+        supervisor \
+    && mkdir -p /etc/supervisor/jobs.d \
+    ;
+
+COPY entrypoint.sh /
+COPY run_job.sh /usr/local/bin/
+
+#https://github.com/docker-library/postgres/issues/296#issuecomment-308735942
+RUN chmod +x /entrypoint.sh /usr/local/bin/run_job.sh
+
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD ["/usr/bin/supervisord", "--nodaemon", "-c", "/etc/supervisor/supervisord.conf"]
