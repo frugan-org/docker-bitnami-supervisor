@@ -7,7 +7,6 @@
 
 Customization of the [Bitnami Minideb Docker image](https://github.com/bitnami/minideb) with integration of:
 
-- [inotify-tools](https://github.com/inotify-tools/inotify-tools)
 - [Supervisor](https://github.com/Supervisor/supervisor)
 
 ## More info
