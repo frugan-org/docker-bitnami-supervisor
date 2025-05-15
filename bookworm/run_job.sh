@@ -15,6 +15,20 @@
 # set -eEuo pipefail  # Strict mode (recommended)
 set -eEuo pipefail
 
+# With run_job.sh wrapper (recommended):
+# e.g. command=/usr/local/bin/run_job.sh /etc/supervisor/jobs.d/job.sh)
+#
+# - Works even if horizon.sh does not have +x
+# - If the file is missing → Supervisor fails immediately
+# - exec ensures that the parent process is the script itself
+#
+# Without run_job.sh wrapper:
+# e.g. command=/etc/supervisor/jobs.d/job.sh
+#
+# - Fails silently if +x permission is missing
+# - If the file is missing, Supervisor may log the error but keep looping
+# - Child process is the script, but without exec you may have different behavior in PID tracing
+
 JOB_SCRIPT="$1"
 
 if [ ! -f "$JOB_SCRIPT" ]; then
